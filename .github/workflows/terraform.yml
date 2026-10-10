@@ -21,8 +21,11 @@ jobs:
 
     - name: Populate OCI Private Key File
       run: |
-        echo "${{ secrets.OCI_PRIVATE_KEY }}" > oci_api_key.pem
+        cat << 'EOF' > oci_api_key.pem
+        ${{ secrets.OCI_PRIVATE_KEY }}
+        EOF
         chmod 600 oci_api_key.pem
+
 
     - name: Terraform Init
       run: terraform init
