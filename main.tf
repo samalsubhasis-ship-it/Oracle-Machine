@@ -15,18 +15,10 @@ variable "region" {}
 variable "parent_compartment_ocid" {}
 
 
-# 4. Create the Virtual Cloud Network (VCN)
-resource "oci_core_vcn" "mumbai_vcn" {
-  compartment_id = var.parent_compartment_ocid
-  cidr_blocks    = ["10.0.0.0/16"]
-  display_name   = "mumbai-vcn"
-  dns_label      = "mumbaivcn"
-}
-
 # 5. Create an Internet Gateway for Outbound/Inbound Access
 resource "oci_core_internet_gateway" "mumbai_ig" {
   compartment_id = var.parent_compartment_ocid
-  vcn_id         = oci_core_vcn.mumbai_vcn.id
+  vcn_id         = ocid1.vcn.oc1.ap-mumbai-1.amaaaaaaktktwiyaqajiwkbg22zs5szl54eowxawkaxbnzh5t7cqbho6xhrq
   display_name   = "mumbai-internet-gateway"
   enabled        = true
 }
@@ -34,7 +26,7 @@ resource "oci_core_internet_gateway" "mumbai_ig" {
 # 6. Create a Route Table to Route Traffic Through the Internet Gateway
 resource "oci_core_route_table" "mumbai_rt" {
   compartment_id = var.parent_compartment_ocid
-  vcn_id         = oci_core_vcn.mumbai_vcn.id
+  vcn_id         = ocid1.vcn.oc1.ap-mumbai-1.amaaaaaaktktwiyaqajiwkbg22zs5szl54eowxawkaxbnzh5t7cqbho6xhrq
   display_name   = "mumbai-route-table"
 
   route_rules {
@@ -47,7 +39,7 @@ resource "oci_core_route_table" "mumbai_rt" {
 # 7. Create a Public Subnet inside the VCN
 resource "oci_core_subnet" "mumbai_public_subnet" {
   compartment_id = var.parent_compartment_ocid
-  vcn_id            = oci_core_vcn.mumbai_vcn.id
+  vcn_id            = ocid1.vcn.oc1.ap-mumbai-1.amaaaaaaktktwiyaqajiwkbg22zs5szl54eowxawkaxbnzh5t7cqbho6xhrq
   cidr_block        = "10.0.1.0/24"
   display_name      = "mumbai-public-subnet"
   dns_label         = "publicsubnet"
